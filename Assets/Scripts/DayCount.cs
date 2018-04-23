@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
 public class DayCount : MonoBehaviour {
 
 	public int count = 0;
 
-	Text label;
+	TextMeshProUGUI label;
 
 	void Start () {
-		label = GetComponent<Text> ();
+		label = GetComponent<TextMeshProUGUI> ();
 		DayController.NextDayCallback += UpdateNewDay;
 		label.text = "Day:  " + count;
 	}

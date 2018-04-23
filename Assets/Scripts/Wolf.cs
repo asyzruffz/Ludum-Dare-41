@@ -11,6 +11,7 @@ public class Wolf : Animal {
 
 	protected override void Start () {
 		base.Start ();
+		species = "Wolf";
 
 		wanderAreas.AddRange (spots.fieldAreas);
 		HuntTimeToggle ();

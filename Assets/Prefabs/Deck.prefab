@@ -23,8 +23,8 @@ GameObject:
   - component: {fileID: 114663718602865988}
   - component: {fileID: 114145916985531878}
   - component: {fileID: 114173499408005144}
-  - component: {fileID: 82577524435216766}
-  - component: {fileID: 114019566950480308}
+  - component: {fileID: 82747920203997730}
+  - component: {fileID: 114967537898486112}
   m_Layer: 5
   m_Name: Deck
   m_TagString: Untagged
@@ -32,7 +32,7 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!82 &82577524435216766
+--- !u!82 &82747920203997730
 AudioSource:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -112,23 +112,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
---- !u!114 &114019566950480308
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1648147688783008}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a761c474aae359f48a2a753885c52504, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  soundSet:
-  - soundType: Draw
-    audios:
-    - {fileID: 8300000, guid: b42b000a74ea8424b87f10752121a872, type: 3}
-    - {fileID: 8300000, guid: 6d6101f7c8aa6e94fbea83bab63eafa1, type: 3}
-    - {fileID: 8300000, guid: 79c793fade752bc4f858fd9b798f55ba, type: 3}
 --- !u!114 &114145916985531878
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -221,6 +204,23 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114967537898486112
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1648147688783008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a761c474aae359f48a2a753885c52504, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundSet:
+  - soundType: Draw
+    audios:
+    - {fileID: 8300000, guid: b42b000a74ea8424b87f10752121a872, type: 3}
+    - {fileID: 8300000, guid: 6d6101f7c8aa6e94fbea83bab63eafa1, type: 3}
+    - {fileID: 8300000, guid: 79c793fade752bc4f858fd9b798f55ba, type: 3}
 --- !u!222 &222584016318324050
 CanvasRenderer:
   m_ObjectHideFlags: 1

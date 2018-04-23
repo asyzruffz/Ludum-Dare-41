@@ -6,7 +6,8 @@ public class Penguin : Animal {
 	
 	protected override void Start () {
 		base.Start ();
-		
+		species = "Penguin";
+
 		wanderAreas.AddRange (spots.boundaryAreas);
 	}
 	

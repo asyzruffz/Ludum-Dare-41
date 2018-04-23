@@ -4,8 +4,11 @@ using UnityEngine.Events;
 
 public class Animal : MonoBehaviour {
 
+	public string species = "???";
+	public bool villain;
 	public Status status;
-	public Animal[] evolvable;
+	public GameObject[] evolvable;
+	public GameObject offspring;
 	public bool isWandering = true;
 
 	[Space]
@@ -16,7 +19,7 @@ public class Animal : MonoBehaviour {
 	float angle = 0;
 	Vector3 destination;
 	float wanderCooldown = 0;
-	bool isDayTime;
+	bool isDayTime = true;
 	UnityAction arrivedCallback;
 	protected List<Transform> wanderAreas;
 
@@ -53,12 +56,17 @@ public class Animal : MonoBehaviour {
 
 	public virtual void Breed () {
 		if (handler) {
-			GameObject newAnimalGameObject = Instantiate (handler.offspringPrefab, position, Quaternion.identity, transform.parent);
-			Chick chick = newAnimalGameObject.GetComponent<Chick> ();
-			ModifyGene (chick);
-			chick.handler = handler;
-			handler.livestockList.Add (chick);
 			status.nutrient -= 10;
+			GameObject newAnimalGameObject = Instantiate (offspring.gameObject, position, Quaternion.identity, transform.parent);
+			Animal offspringAnimal = newAnimalGameObject.GetComponent<Animal> ();
+			ModifyGene (offspringAnimal);
+			offspringAnimal.handler = handler;
+
+			if (villain) {
+				handler.enemyList.Add (offspringAnimal);
+			} else {
+				handler.livestockList.Add (offspringAnimal);
+			}
 		} else {
 			Debug.Log (gameObject.name + " failed to breed!");
 		}
@@ -91,6 +99,10 @@ public class Animal : MonoBehaviour {
 			newAnimal.status.threat += status.threat;
 
 			RemoveMe (newAnimal);
+
+			if (newAnimal.status.nutrient >= 10) {
+				newAnimal.Breed ();
+			}
 		} else {
 			Debug.Log (gameObject.name + " failed to evolve!");
 		}
@@ -106,12 +118,24 @@ public class Animal : MonoBehaviour {
 
 	public void RemoveMe (Animal toBeReplaced = null) {
 		if (handler) {
-			int index = handler.livestockList.IndexOf (this);
-			if (index != -1) {
-				if (toBeReplaced) {
-					handler.livestockList[index] = toBeReplaced;
-				} else {
-					handler.livestockList.RemoveAt (index);
+			int index;
+			if (villain) {
+				index = handler.enemyList.IndexOf (this);
+				if (index != -1) {
+					if (toBeReplaced) {
+						handler.enemyList[index] = toBeReplaced;
+					} else {
+						handler.enemyList.RemoveAt (index);
+					}
+				}
+			} else {
+				index = handler.livestockList.IndexOf (this);
+				if (index != -1) {
+					if (toBeReplaced) {
+						handler.livestockList[index] = toBeReplaced;
+					} else {
+						handler.livestockList.RemoveAt (index);
+					}
 				}
 			}
 		}
@@ -122,17 +146,28 @@ public class Animal : MonoBehaviour {
 		// Reduce hp of victim
 		victim.status.health -= status.threat;
 
+		// If the victim survives
 		if (victim.status.health > 0) {
-			// Counter-attack by victim if it survives
+			// Counter-attack by victim
 			status.health -= victim.status.threat;
 
 			if (status.health <= 0) {
-				// Self dies
+				// Attacker dies
 				RemoveMe ();
 			}
 		} else {
 			// Victim dies
 			victim.RemoveMe ();
+			// Absorb nutrients from victims
+			status.nutrient += victim.status.nutrient;
+			if (status.nutrient >= 10) {
+				Breed ();
+			}
+			// Attacker gains exp
+			status.experience += Mathf.Max (0, victim.status.worth - status.worth);
+			if (status.experience >= 10) {
+				Evolve ();
+			}
 		}
 	}
 
@@ -188,15 +223,22 @@ public class Animal : MonoBehaviour {
 		return 0;
 	}
 
-	protected virtual void ModifyGene (Animal animal) {
+	protected virtual void ModifyGene (Animal animal) { }
 
+	void OnMouseOver () {
+		handler.animalSelected = this;
+	}
+
+	void OnMouseExit () {
+		handler.animalSelected = null;
 	}
 
 	[System.Serializable]
 	public struct Status {
 		public int health;
+		public int threat;
 		public int nutrient;
 		public int experience;
-		public int threat;
+		public int worth;
 	}
 }

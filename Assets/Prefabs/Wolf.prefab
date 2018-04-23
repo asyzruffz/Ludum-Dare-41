@@ -19,6 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4763919735074830}
+  - component: {fileID: 58083179845978302}
   - component: {fileID: 212524829806058222}
   - component: {fileID: 114996598901487298}
   m_Layer: 0
@@ -41,6 +42,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!58 &58083179845978302
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1628991177336790}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -0.1}
+  serializedVersion: 2
+  m_Radius: 0.4566667
 --- !u!114 &114996598901487298
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -52,12 +68,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79710977c86121243998e3833d68327c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  species: Wolf
+  villain: 1
   status:
     health: 8
+    threat: 3
     nutrient: 0
     experience: 0
-    threat: 6
-  evolvable: []
+    worth: 0
+  evolvable:
+  - {fileID: 1628991177336790, guid: c83c8181d32770c4fa81a4635b27c3eb, type: 2}
+  offspring: {fileID: 1628991177336790}
+  isWandering: 1
   handler: {fileID: 0}
   spots: {fileID: 114286715736419640, guid: 41dcb779fc21b36439ea792a84363b87, type: 2}
 --- !u!212 &212524829806058222
@@ -93,7 +115,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: f5e1fe0d73e5c324e80cca51d648a324, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

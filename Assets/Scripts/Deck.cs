@@ -50,4 +50,8 @@ public class Deck : MonoBehaviour {
 			Debug.Log ("Dealer for the deck is null!");
 		}
 	}
+
+	public void TakeFromDeck (bool day) {
+		TakeFromDeck ();
+	}
 }

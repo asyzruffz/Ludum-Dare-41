@@ -6,6 +6,7 @@ public class Duck : Animal {
 	
 	protected override void Start () {
 		base.Start ();
+		species = "Duck";
 
 		wanderAreas.AddRange (spots.coopAreas);
 	}

@@ -1,13 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class AnimalHandler : MonoBehaviour {
 
-	public GameObject offspringPrefab;
 	public GameObject[] enemyPrefabs;
 
 	public int dayToEnemySpawn = 3;
+	public Animal animalSelected;
+	public AlertManager alertManager;
 
 	[Header ("AnimalPool")]
 	public List<Animal> livestockList = new List<Animal> ();
@@ -51,56 +51,108 @@ public class AnimalHandler : MonoBehaviour {
 		}
 	}
 
-	public void CheckGameCondition () {
-		if (livestockList.Count == 0) {
-			Debug.Log ("You lose!");
-		} else if (enemyList.Count == 0) {
-			Debug.Log ("You win!");
-		}
-	}
-
 	void CalculateForNumbers (Card.Suit suit, int amount) {
 		RandomSample sample;
 		int randIndex;
+		int[] prev;
 
 		switch (suit) {
 			case Card.Suit.Spade:
+				if(enemyList.Count == 0) { return; }
 				sample = new RandomSample (enemyList.Count, true);
-				
+
+				prev = new int[enemyList.Count];
+				for (int i = 0; i < prev.Length; i++) {
+					prev[i] = enemyList[i].status.threat;
+				}
+
 				for (int i = 0; i < amount; i++) {
 					randIndex = sample.Next ();
 					enemyList[randIndex].status.threat -= 1;
 					enemyList[randIndex].status.threat = Mathf.Max (enemyList[randIndex].status.threat, 0);
 				}
+
+				for (int i = 0; i < prev.Length; i++) {
+					prev[i] = enemyList[i].status.threat - prev[i];
+					if (prev[i] != 0) {
+						alertManager.DoAlert (enemyList[i].transform, prev[i], suit);
+					}
+				}
+
 				break;
 			case Card.Suit.Heart:
+				if (livestockList.Count == 0) { return; }
 				sample = new RandomSample (livestockList.Count, true);
 
-				for (int i = 0; i < amount; i++) {
-					livestockList[sample.Next ()].status.health += 1;
+				prev = new int[livestockList.Count];
+				for (int i = 0; i < prev.Length; i++) {
+					prev[i] = livestockList[i].status.health;
 				}
+
+				for (int i = 0; i < amount; i++) {
+					randIndex = sample.Next ();
+					livestockList[randIndex].status.health += 1;
+				}
+
+				for (int i = 0; i < prev.Length; i++) {
+					prev[i] = livestockList[i].status.health - prev[i];
+					if (prev[i] != 0) {
+						alertManager.DoAlert (livestockList[i].transform, prev[i], suit);
+					}
+				}
+
 				break;
 			case Card.Suit.Club:
+				if (livestockList.Count == 0) { return; }
 				sample = new RandomSample (livestockList.Count, true);
+
+				prev = new int[livestockList.Count];
+				for (int i = 0; i < prev.Length; i++) {
+					prev[i] = livestockList[i].status.nutrient;
+				}
 
 				for (int i = 0; i < amount; i++) {
 					randIndex = sample.Next ();
 					livestockList[randIndex].status.nutrient += 1;
 					if (livestockList[randIndex].status.nutrient >= 10) {
 						livestockList[randIndex].Breed ();
+						prev[randIndex] -= 10;
 					}
 				}
+
+				for (int i = 0; i < prev.Length; i++) {
+					prev[i] = livestockList[i].status.nutrient - prev[i];
+					if (prev[i] != 0) {
+						alertManager.DoAlert (livestockList[i].transform, prev[i], suit);
+					}
+				}
+
 				break;
 			case Card.Suit.Diamond:
+				if (livestockList.Count == 0) { return; }
 				sample = new RandomSample (livestockList.Count, true);
+
+				prev = new int[livestockList.Count];
+				for (int i = 0; i < prev.Length; i++) {
+					prev[i] = livestockList[i].status.experience;
+				}
 
 				for (int i = 0; i < amount; i++) {
 					randIndex = sample.Next ();
 					livestockList[randIndex].status.experience += 1;
 					if (livestockList[randIndex].status.experience >= 10) {
 						livestockList[randIndex].Evolve ();
+						prev[randIndex] -= 10;
 					}
 				}
+
+				for (int i = 0; i < prev.Length; i++) {
+					prev[i] = livestockList[i].status.experience - prev[i];
+					if (prev[i] != 0) {
+						alertManager.DoAlert (livestockList[i].transform, prev[i], suit);
+					}
+				}
+
 				break;
 			default:
 				break;
@@ -114,16 +166,21 @@ public class AnimalHandler : MonoBehaviour {
 		switch (suit) {
 			case Card.Suit.Spade:
 				sample = new RandomSample (enemyList.Count, true);
-				enemyList[sample.Next ()].status.threat = 0;
+				randIndex = sample.Next ();
+				enemyList[randIndex].status.threat = 0;
+				alertManager.DoAlert (enemyList[randIndex].transform, -10, suit);
 				break;
 			case Card.Suit.Heart:
 				sample = new RandomSample (livestockList.Count, true);
-				livestockList[sample.Next ()].status.health += 10;
+				randIndex = sample.Next ();
+				livestockList[randIndex].status.health += 10;
+				alertManager.DoAlert (livestockList[randIndex].transform, 10, suit);
 				break;
 			case Card.Suit.Club:
 				sample = new RandomSample (livestockList.Count, true);
 				randIndex = sample.Next ();
 				livestockList[randIndex].status.nutrient += 10;
+				alertManager.DoAlert (livestockList[randIndex].transform, 10, suit);
 				livestockList[randIndex].Breed ();
 				break;
 			case Card.Suit.Diamond:
@@ -131,6 +188,7 @@ public class AnimalHandler : MonoBehaviour {
 				randIndex = sample.Next ();
 				livestockList[randIndex].status.experience += 10;
 				livestockList[randIndex].Evolve ();
+				alertManager.DoAlert (livestockList[randIndex].transform, 10, suit);
 				break;
 			default:
 				break;
@@ -138,26 +196,36 @@ public class AnimalHandler : MonoBehaviour {
 	}
 
 	void CalculateForQueen (Card.Suit suit) {
+		int prev;
+
 		switch (suit) {
 			case Card.Suit.Spade:
 				for (int i = 0; i < enemyList.Count; i++) {
-					enemyList[i].status.threat = Mathf.Max (1, enemyList[i].status.threat);
+					prev = enemyList[i].status.threat;
+					enemyList[i].status.threat = Mathf.Min (1, enemyList[i].status.threat);
+					alertManager.DoAlert (enemyList[i].transform, enemyList[i].status.threat - prev, suit);
 				}
 				break;
 			case Card.Suit.Heart:
 				for (int i = 0; i < livestockList.Count; i++) {
-					livestockList[i].status.health = Mathf.Min (9, livestockList[i].status.health);
+					prev = livestockList[i].status.health;
+					livestockList[i].status.health = Mathf.Max (9, livestockList[i].status.health);
+					alertManager.DoAlert (livestockList[i].transform, livestockList[i].status.health - prev, suit);
 				}
 				break;
 			case Card.Suit.Club:
 				int total = livestockList.Count;
 				for (int i = 0; i < total; i++) {
-					livestockList[i].status.nutrient = Mathf.Min (9, livestockList[i].status.nutrient);
+					prev = livestockList[i].status.nutrient;
+					livestockList[i].status.nutrient = Mathf.Max (9, livestockList[i].status.nutrient);
+					alertManager.DoAlert (livestockList[i].transform, livestockList[i].status.nutrient - prev, suit);
 				}
 				break;
 			case Card.Suit.Diamond:
 				for (int i = 0; i < livestockList.Count; i++) {
-					livestockList[i].status.experience = Mathf.Min (9, livestockList[i].status.experience);
+					prev = livestockList[i].status.experience;
+					livestockList[i].status.experience = Mathf.Max (9, livestockList[i].status.experience);
+					alertManager.DoAlert (livestockList[i].transform, livestockList[i].status.experience - prev, suit);
 				}
 				break;
 			default:
@@ -170,17 +238,20 @@ public class AnimalHandler : MonoBehaviour {
 			case Card.Suit.Spade:
 				for (int i = 0; i < enemyList.Count; i++) {
 					enemyList[i].status.threat = 0;
+					alertManager.DoAlert (enemyList[i].transform, -10, suit);
 				}
 				break;
 			case Card.Suit.Heart:
 				for (int i = 0; i < livestockList.Count; i++) {
 					livestockList[i].status.health += 10;
+					alertManager.DoAlert (livestockList[i].transform, 10, suit);
 				}
 				break;
 			case Card.Suit.Club:
 				int total = livestockList.Count;
 				for (int i = 0; i < total; i++) {
 					livestockList[i].status.nutrient += 10;
+					alertManager.DoAlert (livestockList[i].transform, 10, suit);
 					livestockList[i].Breed ();
 				}
 				break;
@@ -188,6 +259,7 @@ public class AnimalHandler : MonoBehaviour {
 				for (int i = 0; i < livestockList.Count; i++) {
 					livestockList[i].status.experience += 10;
 					livestockList[i].Evolve ();
+					alertManager.DoAlert (livestockList[i].transform, 10, suit);
 				}
 				break;
 			default:

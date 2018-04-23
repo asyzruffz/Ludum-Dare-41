@@ -19,6 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4311787127539576}
+  - component: {fileID: 58552691403016560}
   - component: {fileID: 212619298283087106}
   - component: {fileID: 114793579958423920}
   m_Layer: 0
@@ -41,6 +42,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!58 &58552691403016560
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1196546401851768}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -0.053333}
+  serializedVersion: 2
+  m_Radius: 0.4566667
 --- !u!114 &114793579958423920
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -52,16 +68,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0889ae121d2e364eab97d4ee993e7cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  species: Chicken
+  villain: 0
   status:
-    health: 6
+    health: 5
+    threat: 3
     nutrient: 0
     experience: 0
-    threat: 3
+    worth: 4
   evolvable:
-  - {fileID: 114841154708674938, guid: 9a272898d9825c446bbbcd39d99f2ffe, type: 2}
-  - {fileID: 114782163551490880, guid: 006e52a04825cc34c896bebe28d6b38f, type: 2}
-  - {fileID: 114982072731289162, guid: 37be4a726d15df44d8a735a300ded57a, type: 2}
-  - {fileID: 114064270896689880, guid: 3e455e2566e310747b6fbeebc81b7c07, type: 2}
+  - {fileID: 1196546401851768, guid: 9a272898d9825c446bbbcd39d99f2ffe, type: 2}
+  - {fileID: 1196546401851768, guid: 006e52a04825cc34c896bebe28d6b38f, type: 2}
+  - {fileID: 1196546401851768, guid: 37be4a726d15df44d8a735a300ded57a, type: 2}
+  - {fileID: 1196546401851768, guid: 3e455e2566e310747b6fbeebc81b7c07, type: 2}
+  offspring: {fileID: 1780483908432880, guid: cf9a24a6b05d1184c8ba0e6f2aa617d5, type: 2}
+  isWandering: 1
   handler: {fileID: 0}
   spots: {fileID: 114286715736419640, guid: 41dcb779fc21b36439ea792a84363b87, type: 2}
 --- !u!212 &212619298283087106
@@ -97,7 +118,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 6a60e184dfb3593459e82675f8f2ced3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

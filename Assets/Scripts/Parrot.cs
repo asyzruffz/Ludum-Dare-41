@@ -10,6 +10,7 @@ public class Parrot : Animal {
 
 	protected override void Start () {
 		base.Start ();
+		species = "Parrot";
 
 		orig_overallSpeed = overallSpeed;
 		orig_amplitude = amplitude;
