@@ -4,20 +4,16 @@ using UnityEngine;
 
 public class RotationStabilizer : MonoBehaviour {
 
-	Quaternion parentRotation;
 	Vector3 position;
-	Quaternion rotation;
 	float angle = 0;
 
 	void Start () {
+		position = transform.localPosition;
 		angle = Random.value;
 	}
 	
 	void Update () {
-		parentRotation = transform.parent.rotation;
-		transform.localRotation = Quaternion.Inverse (parentRotation);
-		position = transform.position;
-		rotation = transform.localRotation;
+		transform.localRotation = Quaternion.Inverse (transform.parent.rotation);
 	}
 
 	void LateUpdate () {
@@ -25,9 +21,8 @@ public class RotationStabilizer : MonoBehaviour {
 	}
 
 	void Idling () {
-		Vector3 offsetPos = new Vector3 (0, 0.05f * Mathf.Sin (angle), 0);
-		transform.position = position + offsetPos;
-		transform.localRotation = rotation * Quaternion.Euler (0, 0, 0.1f * Mathf.Sin (0.7f * angle) * Mathf.Rad2Deg);
+		Vector3 offsetPos = transform.localRotation * (new Vector3 (0, 0.05f * Mathf.Sin (angle), 0));
+		transform.localPosition = position + offsetPos;
 		angle += 15f * Time.deltaTime;
 	}
 
