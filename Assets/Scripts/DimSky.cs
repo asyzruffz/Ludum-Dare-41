@@ -8,7 +8,7 @@ public class DimSky : MonoBehaviour {
 
 	void Start () {
 		skyLight = GetComponent<Image> ();
-		DayController.DayNightShiftCallback += SetSkyLight;
+		DayController.Instance.DayNightShiftCallback += SetSkyLight;
 	}
 	
 	void SetSkyLight (bool bright) {

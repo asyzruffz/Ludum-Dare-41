@@ -9,7 +9,7 @@ public class DayCount : MonoBehaviour {
 
 	void Start () {
 		label = GetComponent<TextMeshProUGUI> ();
-		DayController.NextDayCallback += UpdateNewDay;
+		DayController.Instance.NextDayCallback += UpdateNewDay;
 		label.text = "Day:  " + count;
 	}
 	

@@ -19,7 +19,7 @@ public class Parrot : Animal {
 		wanderAreas.AddRange (spots.boundaryAreas);
 		ActiveTimeToggle (true);
 
-		DayController.DayNightShiftCallback += ActiveTimeToggle;
+		DayController.Instance.DayNightShiftCallback += ActiveTimeToggle;
 	}
 	
 	protected override void Update () {

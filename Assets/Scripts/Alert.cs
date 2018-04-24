@@ -6,7 +6,9 @@ public class Alert : MonoBehaviour {
 
 	public float lifetime = 0.5f;
 	public float force = 10;
-	
+	public GameObject[] suits;
+
+	TextMeshPro label;
 	Rigidbody2D body;
 	//AudioSource aud;
 	float timer = 0;
@@ -34,12 +36,34 @@ public class Alert : MonoBehaviour {
 
 	public void SetAlert (int value, Card.Suit suit) {
 		string info = ((value > 0) ? "+" : "") + value.ToString ();
-		if (suit != Card.Suit.Unknown) {
-			info += " ";// + suit.ToString ();
-		}
-
-		TextMeshPro label = GetComponent<TextMeshPro> ();
+		label = GetComponent<TextMeshPro> ();
 		label.text = info;
-		Debug.Log (info + " " + suit.ToString ());
+		SetSuit (suit);
+	}
+
+	void SetSuit (Card.Suit suit) {
+		if (suit != Card.Suit.Unknown) {
+			for (int i = 1; i < 5; i++) {
+				suits[i - 1].SetActive (i == (int)suit);
+			}
+
+			switch (suit) {
+				default:
+					label.color = Color.black;
+					break;
+				case Card.Suit.Heart:
+					label.color = Color.red;
+					break;
+				case Card.Suit.Spade:
+					label.color = Color.blue;
+					break;
+				case Card.Suit.Club:
+					label.color = Color.green;
+					break;
+				case Card.Suit.Diamond:
+					label.color = new Color32 (255, 176, 0, 255);
+					break;
+			}
+		}
 	}
 }

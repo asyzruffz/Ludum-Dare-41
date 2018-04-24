@@ -30,7 +30,7 @@ public class Animal : MonoBehaviour {
 	protected float rotateOffset = 0.7f;
 
 	protected virtual void Start () {
-		DayController.DayNightShiftCallback += AwareOfDayNightCycle;
+		DayController.Instance.DayNightShiftCallback += AwareOfDayNightCycle;
 		wanderAreas = new List<Transform> ();
 		position = transform.position;
 		destination = position;
@@ -57,6 +57,7 @@ public class Animal : MonoBehaviour {
 	public virtual void Breed () {
 		if (handler) {
 			status.nutrient -= 10;
+			handler.PlayBreedSound ();
 			GameObject newAnimalGameObject = Instantiate (offspring.gameObject, position, Quaternion.identity, transform.parent);
 			Animal offspringAnimal = newAnimalGameObject.GetComponent<Animal> ();
 			ModifyGene (offspringAnimal);
@@ -84,6 +85,7 @@ public class Animal : MonoBehaviour {
 				return;
 			}
 
+			handler.PlayEvolveSound ();
 			GameObject newAnimalGameObject = Instantiate (evolvable[evolvedIndex].gameObject, position, Quaternion.identity, transform.parent);
 
 			Animal newAnimal = newAnimalGameObject.GetComponent<Animal> ();
@@ -145,11 +147,14 @@ public class Animal : MonoBehaviour {
 	public void HitAnother (Animal victim) {
 		// Reduce hp of victim
 		victim.status.health -= status.threat;
+		handler.alertManager.DoAlert (victim.transform, -status.threat, Card.Suit.Heart);
+		handler.PlayAttackSound ();
 
 		// If the victim survives
 		if (victim.status.health > 0) {
 			// Counter-attack by victim
 			status.health -= victim.status.threat;
+			handler.alertManager.DoAlert (transform, -victim.status.threat, Card.Suit.Heart);
 
 			if (status.health <= 0) {
 				// Attacker dies

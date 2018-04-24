@@ -16,7 +16,7 @@ public class Deck : MonoBehaviour {
 	void Start () {
 		aud = GetComponent<AudioController> ();
 		btn = GetComponent<Button> ();
-		DayController.NextDayCallback += TakeFromDeck;
+		DayController.Instance.DayNightShiftCallback += TakeFromDeck;
 
 		deckPopulation = new RandomSample (52);
 

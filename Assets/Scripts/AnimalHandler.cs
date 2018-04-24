@@ -13,11 +13,19 @@ public class AnimalHandler : MonoBehaviour {
 	public List<Animal> livestockList = new List<Animal> ();
 	public List<Animal> enemyList = new List<Animal> ();
 
+	[Header ("Sounds")]
+	public AudioClip breedSfx;
+	public AudioClip evolveSfx;
+	public AudioClip attackSfx;
+
+	AudioSource source;
 	int spawnDayCount;
 
 	void Start () {
+		source = GetComponent<AudioSource> ();
+
 		spawnDayCount = dayToEnemySpawn;
-		DayController.NextDayCallback += SpawnAnotherEnemy;
+		DayController.Instance.NextDayCallback += SpawnAnotherEnemy;
 	}
 	
 	public void Evaluate (Card.Info cardInfo) {
@@ -272,13 +280,41 @@ public class AnimalHandler : MonoBehaviour {
 			spawnDayCount--;
 			return;
 		} else {
+			dayToEnemySpawn--;
 			spawnDayCount = dayToEnemySpawn;
 		}
 
-		GameObject newEnemyGameObject = Instantiate (enemyPrefabs[Random.Range(0, enemyPrefabs.Length)], 
-										new Vector3(8.86f, 2.77f, 0), Quaternion.identity, transform);
-		Animal enemy = newEnemyGameObject.GetComponent<Animal> ();
-		enemy.handler = this;
-		enemyList.Add (enemy);
+		int spawnCount = (Mathf.Abs (dayToEnemySpawn) / 2) + 1;
+		for (int i = 0; i < spawnCount; i++) {
+			GameObject newEnemyGameObject = Instantiate (enemyPrefabs[Random.Range (0, enemyPrefabs.Length)],
+											new Vector3 (8.86f, 2.77f, 0), Quaternion.identity, transform);
+			Animal enemy = newEnemyGameObject.GetComponent<Animal> ();
+			enemy.handler = this;
+			enemyList.Add (enemy);
+		}
+	}
+
+	public void PlayBreedSound () {
+		if (source) {
+			if (breedSfx) {
+				source.PlayOneShot (breedSfx);
+			}
+		}
+	}
+
+	public void PlayEvolveSound () {
+		if (source) {
+			if (evolveSfx) {
+				source.PlayOneShot (evolveSfx);
+			}
+		}
+	}
+
+	public void PlayAttackSound () {
+		if (source) {
+			if (attackSfx) {
+				source.PlayOneShot (attackSfx);
+			}
+		}
 	}
 }

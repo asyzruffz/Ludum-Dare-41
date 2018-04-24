@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Wolf : Animal {
+public class Snake : Animal {
 
 	bool isHunting = false;
 	bool isHidden = false;
@@ -11,12 +11,12 @@ public class Wolf : Animal {
 
 	protected override void Start () {
 		base.Start ();
-		species = "Wolf";
+		species = "Snake";
 
 		wanderAreas.AddRange (spots.fieldAreas);
 		HuntTimeToggle ();
 		
-		DayController.Instance.DayNightShiftCallback += NightTimeToggle;
+		DayController.Instance.DayNightShiftCallback += DayTimeToggle;
 	}
 	
 	protected override void Update () {
@@ -30,6 +30,7 @@ public class Wolf : Animal {
 			if (attackTimer >= 6f) {
 				attackTimer = 0;
 				Attack ();
+				Attack ();
 			}
 
 			attackTimer += Time.deltaTime;
@@ -39,11 +40,11 @@ public class Wolf : Animal {
 		base.Update ();
 	}
 
-	void NightTimeToggle (bool daylight) {
+	void DayTimeToggle (bool daylight) {
 		if (daylight) {
-			isHidden = !isHunting;
-		} else {
 			isHidden = false;
+		} else {
+			isHidden = !isHunting;
 		}
 		
 		HuntTimeToggle ();
@@ -65,7 +66,8 @@ public class Wolf : Animal {
 
 	void Attack () {
 		if (handler.livestockList.Count > 0) {
-			HitAnother (handler.livestockList[Random.Range (0, handler.livestockList.Count)]);
+			RandomSample sample = new RandomSample (handler.livestockList.Count, true);
+			HitAnother (handler.livestockList[sample.Next ()]);
 		}
 	}
 }

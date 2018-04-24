@@ -7,13 +7,18 @@ public class DayController : MonoBehaviour {
 
 	public float dayDuration = 5;
 	public float nightDuration = 5;
-	
-	public static UnityAction NextDayCallback;
+
+	public static DayController Instance;
+	public UnityAction NextDayCallback;
 	public delegate void DayNightShiftDelegate (bool daytime);
-	public static event DayNightShiftDelegate DayNightShiftCallback;
+	public event DayNightShiftDelegate DayNightShiftCallback;
 
 	float timer;
 	bool isDayTime;
+
+	void Awake () {
+		Instance = this;
+	}
 
 	void Start () {
 		timer = -2; // Extra time for initial card drawing

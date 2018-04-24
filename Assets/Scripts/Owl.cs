@@ -19,7 +19,7 @@ public class Owl : Animal {
 		wanderAreas.AddRange (spots.coopAreas);
 		SleepTimeToggle (true);
 
-		DayController.DayNightShiftCallback += SleepTimeToggle;
+		DayController.Instance.DayNightShiftCallback += SleepTimeToggle;
 	}
 	
 	void SleepTimeToggle (bool asleep) {

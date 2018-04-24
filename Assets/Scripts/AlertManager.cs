@@ -35,7 +35,8 @@ public class AlertManager : MonoBehaviour {
 
 	void Play (AlertInfo alertInfo) {
 		if (alertInfo.trans) {
-			GameObject alertObject = Instantiate (alertPrefab, alertInfo.trans.position, Quaternion.identity, alertInfo.trans);
+			Vector3 offset = Vector3.up * 0.5f;
+			GameObject alertObject = Instantiate (alertPrefab, alertInfo.trans.position + offset, Quaternion.identity);//, alertInfo.trans);
 			Alert alert = alertObject.GetComponent<Alert> ();
 			alert.SetAlert (alertInfo.value, alertInfo.suit);
 		}
