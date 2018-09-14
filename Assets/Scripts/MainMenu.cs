@@ -10,6 +10,10 @@ public class MainMenu : MonoBehaviour {
 	}
 	
 	public void StartGame () {
-		SceneManager.LoadScene ("GamePlay");
+        Invoke ("StartDelayed", 0.5f);
 	}
+
+    void StartDelayed () {
+        SceneManager.LoadScene ("GamePlay");
+    }
 }

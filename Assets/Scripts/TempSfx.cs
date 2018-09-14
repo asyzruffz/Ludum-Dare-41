@@ -14,7 +14,7 @@ public class TempSfx : MonoBehaviour {
 	}
 	
 	void Update () {
-		if (played && source.isPlaying) {
+		if (played && !source.isPlaying) {
 			Destroy (gameObject, 1f);
 		}
 	}
